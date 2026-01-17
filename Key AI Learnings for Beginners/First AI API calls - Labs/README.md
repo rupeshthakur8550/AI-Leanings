@@ -79,7 +79,7 @@ Every API call needs these 2 parameters:
 
 ```python
 client.chat.completions.create(
-    model="openai/gpt-4.1-mini",     # Which AI brain
+    model="gpt-4.1-mini",     # Which AI brain
     messages=[                        # The conversation
         {"role": "user", "content": "Your question here"}
     ]
