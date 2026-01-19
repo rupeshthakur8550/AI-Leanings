@@ -3,18 +3,24 @@ Task 5: Understanding Tokens and Business Costs
 Learn how tokens work and calculate real business costs for AI usage.
 """
 
+import sys
 import openai
 import os
+
+# Add parent directory to sys.path to allow importing from core
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from core import settings
  
 client = openai.OpenAI(
-    api_key = os.getenv("OPENAI_API_KEY"),
-    base_url = os.getenv("OPENAI_API_BASE")
+    api_key = settings.OPENAI_API_KEY,
+    base_url = settings.OPENAI_API_BASE
 )
 
 prompt = "Explain the benefits of using AI for customer support in a business?"
 
 response = client.chat.completions.create(
-    model = os.getenv("OPENAI_MODEL"),
+    model = settings.OPENAI_MODEL,
     messages = [{"role": "user", "context": prompt}]
 )
 

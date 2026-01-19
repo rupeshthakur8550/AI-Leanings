@@ -4,11 +4,17 @@ Understand EVERY part of the chat completion call.
 """
 
 import openai
-import os 
+import sys
+import os
+
+# Add parent directory to sys.path to allow importing from core
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from core import settings 
 
 client = openai.OpenAI(
-    api_key = os.getenv("OPENAI_API_KEY"),
-    base_url = os.getenv("OPENAI_API_BASE")
+    api_key = settings.OPENAI_API_KEY,
+    base_url = settings.OPENAI_API_BASE
 )
 
 # ==========================================
@@ -26,15 +32,22 @@ client = openai.OpenAI(
 
 # TODO: Read each line below carefully to understand what it does
 
-response = client.chat.completions.create(
-    model =  os.getenv("OPENAI_MODEL"),
-    messages = [
-        {
-            "role": "user",
-            "content": "Hello AI, please introduce yourself...!"
-        }
-    ]
-)
+try:
+    response = client.chat.completions.create(
+        model =  settings.OPENAI_MODEL,
+        messages = [
+            {
+                "role": "user",
+                "content": "Hello AI, please introduce yourself...!"
+            }
+        ],
+        timeout=30.0
+    )
+    api_error = None
+except Exception as e:
+    print(f"Error during API call: {e}")
+    response = None
+    api_error = e
 
 # ==========================================
 # REAL RESPONSE OBJECT STRUCTURE
@@ -94,12 +107,14 @@ try:
 
     else:
         print("API call failed")
-        print("Required Parameters missing or invalid")
-
-        print(f"1. mdoel: {os.getenv("OPENAI_MODEL")}")
-        print("2. messages: [{'role': 'user', 'content': 'your message'}]")
+        if api_error:
+             print(f"Reason: {api_error}")
+        else:
+             print("Required Parameters missing or invalid")
+             print(f"1. model: {settings.OPENAI_MODEL}")
+             print("2. messages: [{'role': 'user', 'content': 'your message'}]")
 
 except NameError:
     print("\n Required values:")
-    print(f" - model: {os.getenv("OPENAI_MODEL")}")
+    print(f" - model: {settings.OPENAI_MODEL}")
     print(" - messages: [{'role': 'user', 'content': 'your message'}]")

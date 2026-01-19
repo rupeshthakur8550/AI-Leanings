@@ -3,17 +3,23 @@ Task 4: Extracting the AI's Response
 Learn the EXACT path to get the AI's answer from the response object.
 """
 
+import sys
 import openai
 import os
 
+# Add parent directory to sys.path to allow importing from core
+sys.path.append(os.path.abspath(os.path.join(os.path.dirname(__file__), '..')))
+
+from core import settings
+
 client = openai.OpenAI(
-    api_key = os.getenv("OPENAI_API_KEY"),
-    base_url = os.getenv("OPENAI_API_BASE")
+    api_key = settings.OPENAI_API_KEY,
+    base_url = settings.OPENAI_API_BASE
 )
 
 # Make a simple API call to get a response
 response = client.chat.completions.create(
-    model = os.getenv("OPENAI_MODEL"),
+    model = settings.OPENAI_MODEL,
     messages = [{
         "role" : "user",
         "content": "What is Python is one sentence and why its been used for AI and Machine Learning?" 
